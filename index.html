@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Fast and free TikTok video downloader. No watermarks, no registration required. Download TikTok videos directly to your device."
+    />
+    <meta
+      name="keywords"
+      content="tiktok downloader, download tiktok videos, no watermark, free video downloader"
+    />
+    <meta name="author" content="TikTok Downloader" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="TikTok Video Downloader - Fast & Free" />
+    <meta
+      property="og:description"
+      content="Download TikTok videos without watermarks. Fast, free, and easy to use."
+    />
+    <meta property="og:type" content="website" />
+
+    <title>TikTok Video Downloader - Fast, Free & No Watermark</title>
+
+    <style>
+      /* ============================================
+         GLOBAL STYLES & VARIABLES
+         ============================================ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #25f4ee;
+        --primary-dark: #00d9d7;
+        --bg-dark: #0a0e27;
+        --bg-lighter: #111433;
+        --text-light: #ffffff;
+        --text-gray: #b0b0b0;
+        --error-color: #ff4458;
+        --success-color: #31a24c;
+        --border-radius: 12px;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-lighter) 100%);
+        color: var(--text-light);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      /* ============================================
+         MAIN CONTAINER
+         ============================================ */
+      .container {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(37, 244, 238, 0.1);
+        border-radius: var(--border-radius);
+        padding: 40px 30px;
+        box-shadow: 0 8px 32px rgba(37, 244, 238, 0.1);
+      }
+
+      /* ============================================
+         HEADER & BRANDING
+         ============================================ */
+      .header {
+        text-align: center;
+        margin-bottom: 35px;
+      }
+
+      .header h1 {
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, var(--primary-color), #00f7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        color: var(--text-gray);
+        font-size: 0.95rem;
+      }
+
+      /* ============================================
+         INPUT SECTION
+         ============================================ */
+      .input-section {
+        margin-bottom: 25px;
+      }
+
+      label {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        color: var(--text-light);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .input-wrapper {
+        position: relative;
+        display: flex;
+        gap: 10px;
+      }
+
+      input[type="url"],
+      input[type="text"] {
+        flex: 1;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(37, 244, 238, 0.3);
+        border-radius: var(--border-radius);
+        color: var(--text-light);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      input[type="url"]:focus,
+      input[type="text"]:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 20px rgba(37, 244, 238, 0.2);
+      }
+
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      /* ============================================
+         BUTTON STYLES
+         ============================================ */
+      .btn {
+        padding: 14px 28px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: var(--bg-dark);
+        flex: 0 0 auto;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 244, 238, 0.3);
+      }
+
+      .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* ============================================
+         LOADING INDICATOR
+         ============================================ */
+      .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-top: 2px solid var(--bg-dark);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ============================================
+         STATUS MESSAGES
+         ============================================ */
+      .message {
+        padding: 14px 16px;
+        border-radius: var(--border-radius);
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .message.success {
+        background: rgba(49, 162, 76, 0.2);
+        border-left: 4px solid var(--success-color);
+        color: #8eff8e;
+      }
+
+      .message.error {
+        background: rgba(255, 68, 88, 0.2);
+        border-left: 4px solid var(--error-color);
+        color: #ff9999;
+      }
+
+      .message.info {
+        background: rgba(37, 244, 238, 0.15);
+        border-left: 4px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      /* ============================================
+         DOWNLOAD LINK
+         ============================================ */
+      .download-section {
+        background: rgba(49, 162, 76, 0.15);
+        border: 1px solid var(--success-color);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-bottom: 20px;
+        display: none;
+      }
+
+      .download-section.show {
+        display: block;
+      }
+
+      .download-section h3 {
+        margin-bottom: 12px;
+        color: var(--success-color);
+        font-size: 1rem;
+      }
+
+      .download-url {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px;
+        border-radius: 8px;
+        word-break: break-all;
+        margin-bottom: 12px;
+        font-size: 0.85rem;
+        color: var(--text-gray);
+        font-family: "Courier New", monospace;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-group .btn {
+        flex: 1;
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      /* ============================================
+         DISCLAIMER
+         ============================================ */
+      .disclaimer {
+        background: rgba(255, 165, 0, 0.1);
+        border-left: 4px solid #ffa500;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        font-size: 0.85rem;
+        color: #ffcc99;
+        line-height: 1.5;
+      }
+
+      .disclaimer strong {
+        color: #ffa500;
+      }
+
+      /* ============================================
+         FEATURES LIST
+         ============================================ */
+      .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .feature {
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        border: 1px solid rgba(37, 244, 238, 0.1);
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      .feature-icon {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+
+      /* ============================================
+         FOOTER
+         ============================================ */
+      .footer {
+        text-align: center;
+        color: var(--text-gray);
+        font-size: 0.85rem;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+      }
+
+      /* ============================================
+         RESPONSIVE DESIGN (MOBILE)
+         ============================================ */
+      @media (max-width: 768px) {
+        .container {
+          padding: 25px 20px;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .input-wrapper {
+          flex-direction: column;
+        }
+
+        .btn-primary {
+          width: 100%;
+        }
+
+        .btn-group {
+          flex-direction: column;
+        }
+
+        .btn-group .btn {
+          width: 100%;
+        }
+
+        body {
+          font-size: 14px;
+        }
+      }
+
+      /* ============================================
+         ACCESSIBILITY
+         ============================================ */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* ============================================
+         DARK MODE (Already implemented, but explicit)
+         ============================================ */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-lighter) 100%);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+      <!-- HEADER WITH SEO TITLE -->
+      <div class="header">
+        <h1>TikTok Downloader</h1>
+        <p>Fast • Free • No Watermark</p>
+      </div>
+
+      <!-- LEGAL DISCLAIMER - IMPORTANT FOR ADSENSE & LEGAL -->
+      <div class="disclaimer">
+        <strong>⚠️ Legal Notice:</strong> This tool is provided for
+        <strong>personal and educational use only</strong>. Only download
+        content you have permission to download. Respect copyright laws and
+        TikTok's Terms of Service. We are not responsible for misuse of this
+        tool.
+      </div>
+
+      <!-- FEATURES SHOWCASE - HELPS WITH SEO & USER TRUST -->
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <div>Fast Download</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💰</div>
+          <div>100% Free</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">✨</div>
+          <div>No Watermark</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔒</div>
+          <div>Secure</div>
+        </div>
+      </div>
+
+      <!-- MAIN INPUT FORM -->
+      <div class="input-section">
+        <label for="tiktokUrl">Enter TikTok Video URL</label>
+        <div class="input-wrapper">
+          <input
+            type="url"
+            id="tiktokUrl"
+            placeholder="https://www.tiktok.com/@username/video/123456789"
+            required
+            aria-label="TikTok video URL"
+          />
+          <button class="btn btn-primary" id="downloadBtn" onclick="handleDownload()">
+            <span id="btnText">Download</span>
+            <span id="btnSpinner" style="display: none" class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STATUS MESSAGES CONTAINER -->
+      <div id="messageContainer"></div>
+
+      <!-- DOWNLOAD RESULT SECTION -->
+      <div class="download-section" id="downloadSection">
+        <h3>✓ Video Ready</h3>
+        <div class="download-url" id="downloadUrl"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="triggerDownload()">
+            📥 Download Video
+          </button>
+          <button class="btn btn-secondary" onclick="copyToClipboard()">
+            📋 Copy Link
+          </button>
+        </div>
+      </div>
+
+      <!-- FOOTER WITH LINKS -->
+      <div class="footer">
+        <p>
+          Made with ❤️ | <a href="#" title="Privacy Policy">Privacy</a> |
+          <a href="#" title="Terms of Service">Terms</a>
+        </p>
+        <p>This tool is not affiliated with TikTok</p>
+      </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+      /**
+       * FRONTEND JAVASCRIPT - TikTok Downloader
+       * 
+       * PURPOSE: Handle user interactions and communicate with backend API
+       * 
+       * FLOW:
+       * 1. User enters TikTok URL in input box
+       * 2. User clicks "Download" button
+       * 3. Frontend validates URL format
+       * 4. Frontend sends URL to backend (/api/download)
+       * 5. Backend uses yt-dlp to extract video
+       * 6. Backend returns video URL
+       * 7. Frontend displays download button
+       * 8. User clicks to download or copy link
+       */
+
+      // Store the extracted video URL globally
+      let currentVideoUrl = null;
+
+      /**
+       * Validate TikTok URL format on frontend
+       * 
+       * REASON: Catch obvious errors before sending to backend
+       * This saves backend resources and provides instant feedback
+       * 
+       * @param {string} url - The URL to validate
+       * @returns {boolean} - True if looks like TikTok URL
+       */
+      function isValidTikTokUrl(url) {
+        const tikTokRegex = /^https?:\/\/(www\.)?([a-z]{2}\.)?tiktok\.com|^https?:\/\/(vm|vt)\.tiktok\.com/i;
+        return tikTokRegex.test(url.trim());
+      }
+
+      /**
+       * Display a message to the user
+       * 
+       * Messages can be: success, error, or info
+       * They auto-disappear after a timeout
+       * 
+       * @param {string} message - The message text
+       * @param {string} type - Message type: 'success', 'error', 'info'
+       * @param {number} duration - How long to show (ms), 0 = persistent
+       */
+      function showMessage(message, type = "info", duration = 5000) {
+        const container = document.getElementById("messageContainer");
+
+        // Create message element
+        const messageEl = document.createElement("div");
+        messageEl.className = `message ${type}`;
+        messageEl.textContent = message;
+
+        // Add to page
+        container.appendChild(messageEl);
+
+        // Auto-remove after duration
+        if (duration > 0) {
+          setTimeout(() => {
+            messageEl.style.animation = "slideIn 0.3s ease reverse";
+            setTimeout(() => messageEl.remove(), 300);
+          }, duration);
+        }
+      }
+
+      /**
+       * Clear all messages from display
+       */
+      function clearMessages() {
+        document.getElementById("messageContainer").innerHTML = "";
+      }
+
+      /**
+       * Main download handler
+       * 
+       * This is called when user clicks the Download button
+       * It orchestrates the entire download flow
+       */
+      async function handleDownload() {
+        try {
+          // Clear previous messages
+          clearMessages();
+
+          // Get URL from input box
+          const urlInput = document.getElementById("tiktokUrl").value.trim();
+
+          // VALIDATION 1: URL is not empty
+          if (!urlInput) {
+            showMessage("Please enter a TikTok URL", "error");
+            return;
+          }
+
+          // VALIDATION 2: URL format looks valid
+          if (!isValidTikTokUrl(urlInput)) {
+            showMessage(
+              "Invalid TikTok URL. Example: https://www.tiktok.com/@username/video/123456789",
+              "error"
+            );
+            return;
+          }
+
+          // Show loading state
+          const btn = document.getElementById("downloadBtn");
+          const btnText = document.getElementById("btnText");
+          const btnSpinner = document.getElementById("btnSpinner");
+
+          btn.disabled = true;
+          btnText.textContent = "Downloading...";
+          btnSpinner.style.display = "inline-block";
+
+          showMessage("Extracting video information...", "info", 0);
+
+          /**
+           * BACKEND CALL
+           * Send URL to backend API endpoint
+           * Backend will use yt-dlp to extract the video
+           * 
+           * Endpoint: /api/download?url=<URL>
+           * Method: GET (simple, no body needed)
+           * Returns: JSON with {success, url, title, duration} or {success: false, error}
+           */
+          const response = await fetch(
+            `/api/download?url=${encodeURIComponent(urlInput)}`
+          );
+
+          // Parse JSON response from backend
+          const data = await response.json();
+
+          // Clear the loading message
+          clearMessages();
+
+          // CHECK: Backend returned success
+          if (data.success && data.url) {
+            // Store URL for later download
+            currentVideoUrl = data.url;
+
+            // Show success message
+            showMessage(
+              `✓ Ready! Video: ${data.title} (${Math.round(data.duration)}s)`,
+              "success",
+              4000
+            );
+
+            // Display the download section
+            document.getElementById("downloadUrl").textContent = data.url;
+            document.getElementById("downloadSection").classList.add("show");
+          } else {
+            // Backend returned error
+            showMessage(data.error || "Unknown error occurred", "error", 0);
+          }
+        } catch (error) {
+          // Network or other errors
+          clearMessages();
+          console.error("Download error:", error);
+          showMessage(
+            "Network error. Please check your connection and try again.",
+            "error",
+            0
+          );
+        } finally {
+          // Reset button state
+          const btn = document.getElementById("downloadBtn");
+          const btnText = document.getElementById("btnText");
+          const btnSpinner = document.getElementById("btnSpinner");
+
+          btn.disabled = false;
+          btnText.textContent = "Download";
+          btnSpinner.style.display = "none";
+        }
+      }
+
+      /**
+       * Trigger browser download of the video
+       * 
+       * This uses the browser's native download mechanism
+       * Opens the video URL in a new tab or downloads directly
+       */
+      function triggerDownload() {
+        if (currentVideoUrl) {
+          // Create a temporary anchor element
+          const link = document.createElement("a");
+          link.href = currentVideoUrl;
+          link.download = "tiktok-video.mp4"; // Filename for download
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          showMessage("Download started!", "success", 3000);
+        }
+      }
+
+      /**
+       * Copy the video URL to user's clipboard
+       * 
+       * Allows user to manually download or share the link
+       */
+      function copyToClipboard() {
+        if (currentVideoUrl) {
+          // Use modern clipboard API
+          navigator.clipboard
+            .writeText(currentVideoUrl)
+            .then(() => {
+              showMessage("✓ Video URL copied to clipboard!", "success", 3000);
+            })
+            .catch(() => {
+              // Fallback for older browsers
+              const textArea = document.createElement("textarea");
+              textArea.value = currentVideoUrl;
+              document.body.appendChild(textArea);
+              textArea.select();
+              document.execCommand("copy");
+              document.body.removeChild(textArea);
+              showMessage(
+                "✓ Video URL copied to clipboard!",
+                "success",
+                3000
+              );
+            });
+        }
+      }
+
+      /**
+       * Allow Enter key to trigger download
+       */
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("tiktokUrl")
+          .addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+              handleDownload();
+            }
+          });
+      });
+    </script>
+  </body>
+</html>
